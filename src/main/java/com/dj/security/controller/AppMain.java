@@ -1,4 +1,7 @@
 package com.dj.security.controller;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,6 +30,12 @@ public class AppMain {
 	
 	@Autowired
 	private JwtUtil jwtTokenUtil;
+	
+	@Autowired
+	HttpServletRequest request;
+	
+	@Autowired
+	HttpServletResponse response;
     
     @GetMapping("/hello")
     public String hello() {
@@ -43,9 +52,9 @@ public class AppMain {
 			throw new Exception("Invalid Username or Password");
 		}
     	
-    	final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
+    	//final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
     	
-    	final String jwt = jwtTokenUtil.generateToken(userDetails);
+    	final String jwt = jwtTokenUtil.generateToken(authenticationRequest.getUsername(), request, response);
     	
     	return ResponseEntity.ok(new AuthenticationResponse(jwt));
     	
